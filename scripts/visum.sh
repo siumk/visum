@@ -87,5 +87,10 @@ echo "PORT=$PORT" > $PORT_FILE
 # Once the connection is up, the document will be opened in the default browser
 open_document &
 
+# For the sake of security, set a timeout value to terminate the python server, the ssh redirection and etc.
+# Browser will continue displaying the file after the termination, given no change in configuration, e.g. accessibility mode
+TIMEOUT=1m # 1 minute ; Please "man 1 sleep" for available timing options
+(sleep $TIMEOUT ; pkill -TERM -P $$) &   # Tested on system with pkill implemented, such as Ubuntu 20.04
+
 # Forward the local port (python3 server) with localhost.run
 ssh -o "StrictHostKeyChecking=no" -R 80:localhost:$PORT ssh.localhost.run > $LOCALHOSTRUN_URL_FILE
